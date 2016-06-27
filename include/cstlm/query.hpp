@@ -122,8 +122,8 @@ double LMQueryMKN<t_idx>::append_symbol(const value_type& symbol)
             }
         }
 
-        double D1, D2, D3p;
-        m_idx->mkn_discount(i, D1, D2, D3p, i == 1 || i != m_ngramsize);
+        double D1, D2, D3, D4, D5, D6, D7, D8, D9, D10p;
+        m_idx->mkn_discount(i, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10p, i == 1 || i != m_ngramsize);
 
         double c, d;
         if ((i == m_ngramsize && m_ngramsize != 1) || (*start == PAT_START_SYM)) {
@@ -145,25 +145,55 @@ double LMQueryMKN<t_idx>::append_symbol(const value_type& symbol)
         else if (c == 2) {
             c -= D2;
         }
-        else if (c >= 3) {
-            c -= D3p;
+        else if (c == 3) {
+            c -= D3;
+	} 
+        else if (c == 4) {
+	    c -= D4;
+        } 
+        else if (c == 5) {
+            c -= D5;
+        } 
+        else if (c == 6) {
+            c -= D6;
+        } 
+        else if (c == 7) {
+            c -= D7;
+        } 
+        else if (c == 8) {
+            c -= D8;
+        } 
+        else if (c == 9) {
+            c -= D9;
+        } 
+        else if (c >= 10) {
+            c -= D10p;
         }
 
-        uint64_t n1 = 0, n2 = 0, n3p = 0;
+        uint64_t f1=0; uint64_t f2 =0; uint64_t f3 = 0; uint64_t f4 = 0; uint64_t f5 = 0;
+	uint64_t f6 = 0; uint64_t f7 = 0; uint64_t f8 = 0; uint64_t f9 = 0; uint64_t f10p = 0;
+
         if ((i == m_ngramsize && m_ngramsize != 1) || (*start == PAT_START_SYM)) {
-            m_idx->N123PlusFront(node_excl, start, pattern_end - 1, n1, n2, n3p);
+	    m_idx->N123PlusFront(node_excl, start, pattern_end - 1, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10p);
         }
         else if (i == 1 || m_ngramsize == 1) {
-            n1 = (double)m_idx->discounts.counts.n1_cnt[1];
-            n2 = (double)m_idx->discounts.counts.n2_cnt[1];
-            n3p = (m_idx->vocab_size() - 2) - (n1 + n2);
+            f1 = m_idx->discounts.counts.n1_cnt[1];
+            f2 = m_idx->discounts.counts.n2_cnt[1];
+            f3 = m_idx->discounts.counts.n3_cnt[1];
+	    f4 = m_idx->discounts.counts.n4_cnt[1];
+            f5 = m_idx->discounts.counts.n5_cnt[1];
+            f6 = m_idx->discounts.counts.n6_cnt[1];
+            f7 = m_idx->discounts.counts.n7_cnt[1];
+            f8 = m_idx->discounts.counts.n8_cnt[1];
+            f9 = m_idx->discounts.counts.n9_cnt[1];
+            f10p = (m_idx->vocab_size() - 2) - (f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8 + f9);
         }
         else {
-            m_idx->N123PlusFrontPrime(node_excl, start, pattern_end - 1, n1, n2, n3p);
+	    m_idx->N123PlusFrontPrime(node_excl, start, pattern_end - 1, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10p);
         }
 
         // n3p is dodgy
-        double gamma = D1 * n1 + D2 * n2 + D3p * n3p;
+	double gamma = D1 * f1 + D2 * f2 + D3 * f3 + D4 * f4 + D5 * f5 + D6 * f6 + D7 * f7 + D8 * f8 + D9 * f9 + D10p * f10p;
         p = (c + gamma * p) / d;
     }
 

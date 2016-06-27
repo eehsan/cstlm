@@ -26,9 +26,25 @@ private:
     vector_type m_counts_fb;
     vector_type m_counts_f1prime;
     vector_type m_counts_f2prime;
+    vector_type m_counts_f3prime;
+    vector_type m_counts_f4prime;
+    vector_type m_counts_f5prime;
+    vector_type m_counts_f6prime;
+    vector_type m_counts_f7prime;
+    vector_type m_counts_f8prime;
+    vector_type m_counts_f9prime;
+
     vector_type m_counts_b;
     vector_type m_counts_f1;
     vector_type m_counts_f2;
+    vector_type m_counts_f3;
+    vector_type m_counts_f4;
+    vector_type m_counts_f5;
+    vector_type m_counts_f6;
+    vector_type m_counts_f7;
+    vector_type m_counts_f8;
+    vector_type m_counts_f9;
+
     bool m_is_mkn;
 
 public:
@@ -41,9 +57,25 @@ public:
         m_counts_fb = cc.m_counts_fb;
         m_counts_f1prime = cc.m_counts_f1prime;
         m_counts_f2prime = cc.m_counts_f2prime;
+        m_counts_f3prime = cc.m_counts_f3prime;
+        m_counts_f4prime = cc.m_counts_f4prime;
+        m_counts_f5prime = cc.m_counts_f5prime;
+        m_counts_f6prime = cc.m_counts_f6prime;
+        m_counts_f7prime = cc.m_counts_f7prime;
+        m_counts_f8prime = cc.m_counts_f8prime;
+        m_counts_f9prime = cc.m_counts_f9prime;
+
         m_counts_b = cc.m_counts_b;
         m_counts_f1 = cc.m_counts_f1;
         m_counts_f2 = cc.m_counts_f2;
+        m_counts_f3 = cc.m_counts_f3;
+        m_counts_f4 = cc.m_counts_f4;
+        m_counts_f5 = cc.m_counts_f5;
+        m_counts_f6 = cc.m_counts_f6;
+        m_counts_f7 = cc.m_counts_f7;
+        m_counts_f8 = cc.m_counts_f8;
+        m_counts_f9 = cc.m_counts_f9;
+
         m_is_mkn = cc.m_is_mkn;
     }
     compressed_counts(compressed_counts&& cc)
@@ -54,9 +86,25 @@ public:
         m_counts_fb = std::move(cc.m_counts_fb);
         m_counts_f1prime = std::move(cc.m_counts_f1prime);
         m_counts_f2prime = std::move(cc.m_counts_f2prime);
+        m_counts_f3prime = std::move(cc.m_counts_f3prime);
+        m_counts_f4prime = std::move(cc.m_counts_f4prime);
+        m_counts_f5prime = std::move(cc.m_counts_f5prime);
+        m_counts_f6prime = std::move(cc.m_counts_f6prime);
+        m_counts_f7prime = std::move(cc.m_counts_f7prime);
+        m_counts_f8prime = std::move(cc.m_counts_f8prime);
+        m_counts_f9prime = std::move(cc.m_counts_f9prime);
+
         m_counts_b = std::move(cc.m_counts_b);
         m_counts_f1 = std::move(cc.m_counts_f1);
         m_counts_f2 = std::move(cc.m_counts_f2);
+        m_counts_f3 = std::move(cc.m_counts_f3);
+        m_counts_f4 = std::move(cc.m_counts_f4);
+        m_counts_f5 = std::move(cc.m_counts_f5);
+        m_counts_f6 = std::move(cc.m_counts_f6);
+        m_counts_f7 = std::move(cc.m_counts_f7);
+        m_counts_f8 = std::move(cc.m_counts_f8);
+        m_counts_f9 = std::move(cc.m_counts_f9);
+
         m_is_mkn = cc.m_is_mkn;
     }
     compressed_counts& operator=(compressed_counts&& cc)
@@ -67,10 +115,25 @@ public:
         m_counts_fb = std::move(cc.m_counts_fb);
         m_counts_f1prime = std::move(cc.m_counts_f1prime);
         m_counts_f2prime = std::move(cc.m_counts_f2prime);
+        m_counts_f3prime = std::move(cc.m_counts_f3prime);
+        m_counts_f4prime = std::move(cc.m_counts_f4prime);
+        m_counts_f5prime = std::move(cc.m_counts_f5prime);
+        m_counts_f6prime = std::move(cc.m_counts_f6prime);
+        m_counts_f7prime = std::move(cc.m_counts_f7prime);
+        m_counts_f8prime = std::move(cc.m_counts_f8prime);
+        m_counts_f9prime = std::move(cc.m_counts_f9prime);
 
         m_counts_b = std::move(cc.m_counts_b);
         m_counts_f1 = std::move(cc.m_counts_f1);
         m_counts_f2 = std::move(cc.m_counts_f2);
+        m_counts_f3 = std::move(cc.m_counts_f3);
+        m_counts_f4 = std::move(cc.m_counts_f4);
+        m_counts_f5 = std::move(cc.m_counts_f5);
+        m_counts_f6 = std::move(cc.m_counts_f6);
+        m_counts_f7 = std::move(cc.m_counts_f7);
+        m_counts_f8 = std::move(cc.m_counts_f8);
+        m_counts_f9 = std::move(cc.m_counts_f9);
+
         m_is_mkn = cc.m_is_mkn;
         return *this;
     }
@@ -123,8 +186,12 @@ public:
 
     template <class t_cst, class t_node_type>
     uint32_t compute_contexts_mkn(t_cst& cst, t_node_type node,
-        uint64_t& num_syms, uint64_t& f1prime,
-        uint64_t& f2prime)
+                                  uint64_t& num_syms, uint64_t& f1prime,
+                                  uint64_t& f2prime, uint64_t& f3prime, 
+                                  uint64_t& f4prime, uint64_t& f5prime, 
+                                  uint64_t& f6prime, uint64_t& f7prime, 
+                                  uint64_t& f8prime, uint64_t& f9prime)
+
     {
         static thread_local std::vector<typename t_cst::csa_type::wavelet_tree_type::value_type> preceding_syms(
             cst.csa.sigma);
@@ -135,6 +202,14 @@ public:
 
         f1prime = 0;
         f2prime = 0;
+ 	f3prime = 0;
+        f4prime = 0;
+        f5prime = 0;
+        f6prime = 0;
+        f7prime = 0;
+        f8prime = 0;
+        f9prime = 0;
+
         uint64_t all = 0;
         auto child = cst.select_child(node, 1);
         while (child != cst.root()) {
@@ -148,6 +223,20 @@ public:
                 f1prime++;
             if (num_syms == 2)
                 f2prime++;
+            if (num_syms == 3)
+                f3prime++;
+	    if (num_syms == 4)
+                f4prime++;
+            if (num_syms == 5)
+                f5prime++;
+            if (num_syms == 6)
+                f6prime++;
+            if (num_syms == 7)
+                f7prime++;
+            if (num_syms == 8)
+                f8prime++;
+            if (num_syms == 9)
+                f9prime++;
             all++;
             child = cst.sibling(child);
         }
@@ -235,10 +324,11 @@ public:
     }
 
     template <class t_cst, class t_node, class t_writer>
-    void precompute_subtree(t_cst& cst, t_node start, t_writer& writer, std::vector<std::pair<uint64_t, uint64_t> >& child_hist, uint64_t max_depth)
+    void precompute_subtree(t_cst& cst, t_node start, t_writer& writer, std::vector<uint64_t[9]>& child_hist, uint64_t max_depth)
     {
         for (auto& v : child_hist)
-            v = { 0, 0 };
+             memset(v,0,sizeof(v));
+
         uint64_t node_depth = 1;
         auto prev = cst.root();
         auto itr = cst.begin(start);
@@ -248,6 +338,14 @@ public:
         uint64_t num_syms;
         uint64_t f1prime;
         uint64_t f2prime;
+        uint64_t f3prime;
+        uint64_t f4prime;
+        uint64_t f5prime;
+        uint64_t f6prime;
+        uint64_t f7prime;
+        uint64_t f8prime;
+        uint64_t f9prime;
+
         while (itr != end) {
             auto node = *itr;
             if (cst.parent(node) == prev)
@@ -259,17 +357,35 @@ public:
                 if (str_depth <= max_depth) {
                     computed_context_result res;
                     res.node_id = cst.id(node);
-                    auto& f12 = child_hist[node_depth];
-                    res.f1 = f12.first;
-                    res.f2 = f12.second;
-                    auto c = compute_contexts_mkn(cst, node, num_syms, f1prime, f2prime);
+                    auto& f123456789 = child_hist[node_depth];
+                    res.f1 = f123456789[0];
+                    res.f2 = f123456789[1];
+                    res.f3 = f123456789[2];
+                    res.f4 = f123456789[3];
+                    res.f5 = f123456789[4];
+                    res.f6 = f123456789[5];
+                    res.f7 = f123456789[6];
+                    res.f8 = f123456789[7];
+                    res.f9 = f123456789[8];
+
+                    auto c = compute_contexts_mkn(cst, node, num_syms, f1prime, f2prime, f3prime, 
+                                                                       f4prime, f5prime, f6prime, 
+                                                                       f7prime, f8prime, f9prime);
                     res.fb = c;
                     res.b = num_syms;
                     res.f1prime = f1prime;
                     res.f2prime = f2prime;
+                    res.f3prime = f3prime;
+                    res.f4prime = f4prime;
+                    res.f5prime = f5prime;
+                    res.f6prime = f6prime;
+                    res.f7prime = f7prime;
+                    res.f8prime = f8prime;
+                    res.f9prime = f9prime;
+
                     writer.write_result(res);
                 }
-                child_hist[node_depth] = { 0, 0 };
+                memset(child_hist[node_depth],0,sizeof(child_hist[node_depth]));
             }
             else {
                 /* first visit */
@@ -280,9 +396,24 @@ public:
                 }
                 int count = cst.size(node);
                 if (count == 1)
-                    child_hist[node_depth - 1].first += 1;
+                    child_hist[node_depth - 1][0] += 1;
                 else if (count == 2)
-                    child_hist[node_depth - 1].second += 1;
+                    child_hist[node_depth - 1][1] += 1;
+                else if (count == 3)
+                    child_hist[node_depth - 1][2] += 1;
+                else if (count == 4)
+                    child_hist[node_depth - 1][3] += 1;
+                else if (count == 5)
+                    child_hist[node_depth - 1][4] += 1;
+                else if (count == 6)
+                    child_hist[node_depth - 1][5] += 1;
+                else if (count == 7)
+                    child_hist[node_depth - 1][6] += 1;
+                else if (count == 8)
+                    child_hist[node_depth - 1][7] += 1;
+                else if (count == 9)
+                    child_hist[node_depth - 1][8] += 1;
+
             }
             prev = node;
             ++itr;
@@ -331,7 +462,7 @@ public:
                 std::async(std::launch::async, [this, i, max_node_depth, &cst, &col](std::vector<typename t_cst::node_type> nodes) -> counts_writer {
                     counts_writer w(i, col);
                     // compute stuff
-                    std::vector<std::pair<uint64_t, uint64_t> > child_hist(max_node_depth + 2);
+                    std::vector<uint64_t[9]> child_hist(max_node_depth + 2);
                     for (const auto& node : nodes) {
                         precompute_subtree(cst, node, w, child_hist, max_node_depth);
                     }
@@ -363,6 +494,34 @@ public:
                 auto counts_f2 = wh.get_counts_f2();
                 m_counts_f2 = vector_type(counts_f2);
             }
+	    {
+                auto counts_f3 = wh.get_counts_f3();
+                m_counts_f3 = vector_type(counts_f3);
+            }
+            {
+                auto counts_f4 = wh.get_counts_f4();
+                m_counts_f4 = vector_type(counts_f4);
+            }
+            {
+                auto counts_f5 = wh.get_counts_f5();
+                m_counts_f5 = vector_type(counts_f5);
+            }
+            {
+                auto counts_f6 = wh.get_counts_f6();
+                m_counts_f6 = vector_type(counts_f6);
+            }
+            {
+                auto counts_f7 = wh.get_counts_f7();
+                m_counts_f7 = vector_type(counts_f7);
+            }
+            {
+                auto counts_f8 = wh.get_counts_f8();
+                m_counts_f8 = vector_type(counts_f8);
+            }
+	    {
+                auto counts_f9 = wh.get_counts_f9();
+                m_counts_f9 = vector_type(counts_f9);
+            }
             {
                 auto counts_b = wh.get_counts_b();
                 m_counts_b = vector_type(counts_b);
@@ -379,6 +538,35 @@ public:
                 auto counts_f2p = wh.get_counts_f2prime();
                 m_counts_f2prime = vector_type(counts_f2p);
             }
+	    {
+                auto counts_f3p = wh.get_counts_f3prime();
+                m_counts_f3prime = vector_type(counts_f3p);
+            }
+            {
+                auto counts_f4p = wh.get_counts_f4prime();
+                m_counts_f4prime = vector_type(counts_f4p);
+            }
+            {
+                auto counts_f5p = wh.get_counts_f5prime();
+                m_counts_f5prime = vector_type(counts_f5p);
+            }
+            {
+                auto counts_f6p = wh.get_counts_f6prime();
+                m_counts_f6prime = vector_type(counts_f6p);
+            }
+            {
+                auto counts_f7p = wh.get_counts_f7prime();
+                m_counts_f7prime = vector_type(counts_f7p);
+            }
+            {
+                auto counts_f8p = wh.get_counts_f8prime();
+                m_counts_f8prime = vector_type(counts_f8p);
+            }
+            {
+                auto counts_f9p = wh.get_counts_f9prime();
+                m_counts_f9prime = vector_type(counts_f9p);
+            }
+
         }
 
         LOG(INFO) << "precomputed " << m_bv_rank(m_bv.size()) << " entries out of "
@@ -396,8 +584,23 @@ public:
         written_bytes += sdsl::serialize(m_counts_b, out, child, "counts_b");
         written_bytes += sdsl::serialize(m_counts_f1, out, child, "counts_f1");
         written_bytes += sdsl::serialize(m_counts_f2, out, child, "counts_f2");
+        written_bytes += sdsl::serialize(m_counts_f3, out, child, "counts_f3");
+        written_bytes += sdsl::serialize(m_counts_f4, out, child, "counts_f4");
+        written_bytes += sdsl::serialize(m_counts_f5, out, child, "counts_f5");
+        written_bytes += sdsl::serialize(m_counts_f6, out, child, "counts_f6");
+        written_bytes += sdsl::serialize(m_counts_f7, out, child, "counts_f7");
+        written_bytes += sdsl::serialize(m_counts_f8, out, child, "counts_f8");
+        written_bytes += sdsl::serialize(m_counts_f9, out, child, "counts_f9");
         written_bytes += sdsl::serialize(m_counts_f1prime, out, child, "counts_f1p");
         written_bytes += sdsl::serialize(m_counts_f2prime, out, child, "counts_f2p");
+        written_bytes += sdsl::serialize(m_counts_f3prime, out, child, "counts_f3p");
+        written_bytes += sdsl::serialize(m_counts_f4prime, out, child, "counts_f4p");
+        written_bytes += sdsl::serialize(m_counts_f5prime, out, child, "counts_f5p");
+        written_bytes += sdsl::serialize(m_counts_f6prime, out, child, "counts_f6p");
+        written_bytes += sdsl::serialize(m_counts_f7prime, out, child, "counts_f7p");
+        written_bytes += sdsl::serialize(m_counts_f8prime, out, child, "counts_f8p");
+        written_bytes += sdsl::serialize(m_counts_f9prime, out, child, "counts_f9p");
+
         sdsl::structure_tree::add_size(child, written_bytes);
         return written_bytes;
     }
@@ -411,8 +614,24 @@ public:
         sdsl::load(m_counts_b, in);
         sdsl::load(m_counts_f1, in);
         sdsl::load(m_counts_f2, in);
+        sdsl::load(m_counts_f3, in);
+        sdsl::load(m_counts_f4, in);
+        sdsl::load(m_counts_f5, in);
+        sdsl::load(m_counts_f6, in);
+        sdsl::load(m_counts_f7, in);
+        sdsl::load(m_counts_f8, in);
+        sdsl::load(m_counts_f9, in);
+
         sdsl::load(m_counts_f1prime, in);
         sdsl::load(m_counts_f2prime, in);
+        sdsl::load(m_counts_f3prime, in);
+        sdsl::load(m_counts_f4prime, in);
+        sdsl::load(m_counts_f5prime, in);
+        sdsl::load(m_counts_f6prime, in);
+        sdsl::load(m_counts_f7prime, in);
+        sdsl::load(m_counts_f8prime, in);
+        sdsl::load(m_counts_f9prime, in);
+
         m_is_mkn = (m_counts_f1.size() > 0);
     }
 
@@ -427,7 +646,8 @@ public:
 
     template <class t_cst, class t_node_type>
     void lookup_f12(t_cst& cst, t_node_type node, uint64_t& f1,
-        uint64_t& f2) const
+        uint64_t& f2, uint64_t& f3, uint64_t& f4, uint64_t& f5,
+        uint64_t& f6, uint64_t& f7, uint64_t& f8, uint64_t& f9) const
     {
 #ifdef ENABLE_CSTLM_TIMINGS
         auto timer = lm_bench::bench(timer_type::lookup_f12);
@@ -437,6 +657,13 @@ public:
         auto rank_in_vec = m_bv_rank(id);
         f1 = m_counts_f1[rank_in_vec];
         f2 = m_counts_f2[rank_in_vec];
+        f3 = m_counts_f3[rank_in_vec];
+        f4 = m_counts_f4[rank_in_vec];
+        f5 = m_counts_f5[rank_in_vec];
+        f6 = m_counts_f6[rank_in_vec];
+        f7 = m_counts_f7[rank_in_vec];
+        f8 = m_counts_f8[rank_in_vec];
+        f9 = m_counts_f9[rank_in_vec];
     }
 
     template <class t_cst, class t_node_type>
@@ -452,7 +679,10 @@ public:
 
     template <class t_cst, class t_node_type>
     void lookup_f12prime(t_cst& cst, t_node_type node, uint64_t& f1prime,
-        uint64_t& f2prime) const
+                         uint64_t& f2prime, uint64_t& f3prime,
+                         uint64_t& f4prime, uint64_t& f5prime,
+                         uint64_t& f6prime, uint64_t& f7prime,
+                         uint64_t& f8prime, uint64_t& f9prime) const
     {
 #ifdef ENABLE_CSTLM_TIMINGS
         auto timer = lm_bench::bench(timer_type::lookup_f12prime);
@@ -462,6 +692,13 @@ public:
         auto rank_in_vec = m_bv_rank(id);
         f1prime = m_counts_f1prime[rank_in_vec];
         f2prime = m_counts_f2prime[rank_in_vec];
+        f3prime = m_counts_f3prime[rank_in_vec];
+        f4prime = m_counts_f4prime[rank_in_vec];
+        f5prime = m_counts_f5prime[rank_in_vec];
+        f6prime = m_counts_f6prime[rank_in_vec];
+        f7prime = m_counts_f7prime[rank_in_vec];
+        f8prime = m_counts_f8prime[rank_in_vec];
+        f9prime = m_counts_f9prime[rank_in_vec];
     }
 
     template <class t_cst, class t_node_type>

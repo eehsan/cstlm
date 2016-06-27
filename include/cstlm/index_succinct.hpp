@@ -204,8 +204,8 @@ public:
             return m_discounts.Y[level];
     }
 
-    void mkn_discount(uint64_t level, double& D1, double& D2, double& D3p,
-        bool cnt = false) const
+    void mkn_discount(uint64_t level, double& D1, double& D2, double& D3, double& D4, double& D5,
+                      double& D6, double& D7, double& D8, double& D9, double& D10p, bool cnt = false) const
     {
         // trim to the maximum computed length, assuming that
         // discounts stay flat beyond this (a reasonable guess)
@@ -213,12 +213,26 @@ public:
         if (cnt) {
             D1 = m_discounts.D1_cnt[level];
             D2 = m_discounts.D2_cnt[level];
-            D3p = m_discounts.D3_cnt[level];
+            D3 = m_discounts.D3_cnt[level];
+            D4 = m_discounts.D4_cnt[level];
+            D5 = m_discounts.D5_cnt[level];
+            D6 = m_discounts.D6_cnt[level];
+            D7 = m_discounts.D7_cnt[level];
+            D8 = m_discounts.D8_cnt[level];
+            D9 = m_discounts.D9_cnt[level];
+            D10p = m_discounts.D10_cnt[level];
         }
         else {
             D1 = m_discounts.D1[level];
             D2 = m_discounts.D2[level];
-            D3p = m_discounts.D3[level];
+            D3 = m_discounts.D3[level];
+            D4 = m_discounts.D4[level];
+            D5 = m_discounts.D5[level];
+            D6 = m_discounts.D6[level];
+            D7 = m_discounts.D7[level];
+            D8 = m_discounts.D8[level];
+            D9 = m_discounts.D9[level];
+            D10p = m_discounts.D10[level];
         }
     }
 
@@ -292,22 +306,25 @@ public:
         return N1plus_front;
     }
 
-    // computes N1(abc *), N_2(abc *), N_3+(abc *) needed for the lower level of
+
+    /********MMKN ONLY*********************************************************/
     void N123PlusFrontPrime(const node_type& node, pattern_iterator pattern_begin,
         pattern_iterator pattern_end, uint64_t& f1prime,
-        uint64_t& f2prime, uint64_t& f3pprime) const
+        uint64_t& f2prime, uint64_t& f3prime, uint64_t& f4prime,
+        uint64_t& f5prime, uint64_t& f6prime, uint64_t& f7prime,
+        uint64_t& f8prime, uint64_t& f9prime, uint64_t& f10pprime) const
     {
 #ifdef ENABLE_CSTLM_TIMINGS
         auto timer = lm_bench::bench(timer_type::N123PlusFrontPrime);
 #endif
         uint64_t pattern_size = std::distance(pattern_begin, pattern_end);
         bool full_match = (!m_cst.is_leaf(node) && pattern_size == m_cst.depth(node));
-        f1prime = f2prime = f3pprime = 0;
+        f1prime = f2prime = f3prime = f4prime = f5prime = f6prime = f7prime = f8prime = f9prime = f10pprime = 0;
         uint64_t all = 0;
         if (full_match) {
             if (m_precomputed.is_precomputed(m_cst, node)) {
-                m_precomputed.lookup_f12prime(m_cst, node, f1prime, f2prime); // FIXME change the name n1plusfrontback
-                all = m_cst.degree(node);
+               m_precomputed.lookup_f12prime(m_cst, node, f1prime, f2prime, f3prime, f4prime, f5prime ,f6prime, f7prime, f8prime, f9prime); 
+               all = m_cst.degree(node);
             }
             else {
                 for (auto child = m_cst.select_child(node, 1); child != m_cst.root(); child = m_cst.sibling(child)) {
@@ -323,11 +340,25 @@ public:
                         f1prime++;
                     if (num_syms == 2)
                         f2prime++;
+ 		    if (num_syms == 3)
+ 			f3prime++;
+		    if (num_syms == 4)
+                        f4prime++;
+                    if (num_syms == 5)
+                        f5prime++;
+                    if (num_syms == 6)
+                        f6prime++;
+                    if (num_syms == 7)
+                        f7prime++;
+                    if (num_syms == 8)
+                        f8prime++;
+                    if (num_syms == 9)
+                        f9prime++;
                     all++;
                     child = m_cst.sibling(child);
                 }
             }
-            f3pprime = all - f1prime - f2prime;
+            f10pprime = all - f1prime - f2prime - f3prime - f4prime - f5prime - f6prime - f7prime - f8prime - f9prime;
         }
         else {
             // pattern is part of the edge label
@@ -336,16 +367,31 @@ public:
                 f1prime++;
             if (num_symsprime == 2)
                 f2prime++;
-            all++; // FIXME: is this right, all is 1? can't see how this might overflow
-            f3pprime = all - f1prime - f2prime;
+            if (num_symsprime == 3)
+                f3prime++;
+            if (num_symsprime == 4)
+                f4prime++;
+            if (num_symsprime == 5)
+                f5prime++;
+            if (num_symsprime == 6)
+                f6prime++;
+            if (num_symsprime == 7)
+                f7prime++;
+            if (num_symsprime == 8)
+                f8prime++;
+            if (num_symsprime == 9)
+                f9prime++;
+            all++; 
+	    f10pprime = all - f1prime - f2prime - f3prime - f4prime - f5prime - f6prime - f7prime - f8prime - f9prime;
         }
     }
 
     // Computes N_1( abc * ), N_2( abc * ), N_3+( abc * ); needed for modified
     // Kneser-Ney smoothing
     void N123PlusFront(const node_type& node, pattern_iterator pattern_begin,
-        pattern_iterator pattern_end, uint64_t& n1, uint64_t& n2,
-        uint64_t& n3p) const
+        pattern_iterator pattern_end, uint64_t& f1, uint64_t& f2,
+        uint64_t& f3, uint64_t& f4, uint64_t& f5, uint64_t& f6,
+        uint64_t& f7, uint64_t& f8, uint64_t& f9, uint64_t& f10p) const
     {
 #ifdef ENABLE_CSTLM_TIMINGS
         auto timer = lm_bench::bench(timer_type::N123PlusFront);
@@ -353,13 +399,11 @@ public:
         // ASSUMPTION: node matches the pattern in the forward tree, m_cst
         uint64_t pattern_size = std::distance(pattern_begin, pattern_end);
         bool full_match = (!m_cst.is_leaf(node) && pattern_size == m_cst.depth(node));
-        n1 = n2 = n3p = 0;
+        f1 = f2 = f3 = f4 = f5 = f6 = f7 = f8 = f9 = f10p = 0;
         if (full_match) {
-
             if (pattern_size <= t_max_ngram_count) {
-                // FIXME: this bit is currently broken
-                m_precomputed.lookup_f12(m_cst, node, n1, n2);
-                n3p = m_cst.degree(node) - n1 - n2;
+                m_precomputed.lookup_f12(m_cst, node, f1, f2, f3, f4, f5, f6, f7, f8, f9);
+                f10p = m_cst.degree(node) - f1 - f2 - f3 - f4 - f5 - f6 - f7 - f8 - f9;
             }
             else {
                 // loop over the children
@@ -368,11 +412,25 @@ public:
                 while (child != root) {
                     auto c = m_cst.size(child);
                     if (c == 1)
-                        n1 += 1;
+                        f1 += 1;
                     else if (c == 2)
-                        n2 += 1;
-                    else if (c >= 3)
-                        n3p += 1;
+                        f2 += 1;
+                    else if (c == 3)
+                        f3 += 1;
+		    else if (c ==4)
+			f4 +=1;
+                    else if (c ==5)
+                        f5 +=1;
+                    else if (c ==6)
+                        f6 +=1;
+                    else if (c ==7)
+                        f7 +=1;
+                    else if (c ==8)
+                        f8 +=1;
+                    else if (c ==9)
+                        f9 +=1;
+                    else if (c >=10)
+                        f10p +=1;
                     child = m_cst.sibling(child);
                 }
             }
@@ -383,11 +441,25 @@ public:
             if (symbol != PAT_END_SYM) {
                 auto c = m_cst.size(node);
                 if (c == 1)
-                    n1 += 1;
+                    f1 += 1;
                 else if (c == 2)
-                    n2 += 1;
-                else if (c >= 3)
-                    n3p += 1;
+                    f2 += 1;
+                else if (c == 3)
+                    f3 += 1;
+		else if (c ==4)
+		    f4 +=1;
+                else if (c == 5)
+                    f5 += 1;
+                else if (c == 6)
+                    f6 += 1;
+                else if (c == 7)
+                    f7 += 1;
+                else if (c == 8)
+                    f8 += 1;
+                else if (c == 9)
+                    f9 += 1;
+                else if (c >= 10)
+                    f10p += 1;
             }
         }
     }
@@ -427,8 +499,11 @@ public:
         return total_contexts;
     }
 
+    /*************FOR MMKN ONLY*************************************/
     uint64_t compute_contexts(const t_cst& cst, const node_type& node,
-        uint64_t& count1, uint64_t& count2) const
+                              uint64_t& count1, uint64_t& count2, uint64_t& count3,
+			      uint64_t& count4, uint64_t& count5, uint64_t& count6,
+			      uint64_t& count7, uint64_t& count8, uint64_t& count9) const
     {
         static thread_local std::vector<typename t_cst::csa_type::wavelet_tree_type::value_type> preceding_syms(
             cst.csa.sigma);
@@ -444,6 +519,13 @@ public:
         auto node_depth = cst.depth(node);
         count1 = 0;
         count2 = 0;
+ 	count3 = 0;
+        count4 = 0;
+        count5 = 0;
+        count6 = 0;
+        count7 = 0;
+        count8 = 0;
+        count9 = 0;
         for (size_t i = 0; i < num_syms; i++) {
             auto new_lb = cst.csa.C[cst.csa.char2comp[preceding_syms[i]]] + left[i];
             auto new_rb = cst.csa.C[cst.csa.char2comp[preceding_syms[i]]] + right[i] - 1;
@@ -467,11 +549,12 @@ public:
                     total_contexts += deg;
                     // need to know how many of the children have cst.size(new_node) == 1
                     // or 2
-                    uint64_t delta1 = 0, delta2 = 0;
+		    uint64_t delta1 = 0; uint64_t delta2 = 0; uint64_t delta3 = 0; uint64_t delta4 = 0;
+		    uint64_t delta5 = 0; uint64_t delta6 = 0; uint64_t delta7 = 0; uint64_t delta8 = 0; uint64_t delta9 =0;
                     if (m_precomputed.is_precomputed(cst, new_node)) {
                         // efficient way to compute based on earlier pass computing f1 and
                         // f2 values
-                        m_precomputed.lookup_f12(cst, new_node, delta1, delta2);
+			m_precomputed.lookup_f12(cst, new_node, delta1, delta2, delta3, delta4, delta5, delta6, delta7, delta8, delta9);
                     }
                     else {
                         // inefficient way
@@ -481,10 +564,31 @@ public:
                                 delta1++;
                             else if (size == 2)
                                 delta2++;
+ 			    else if (size == 3)
+ 				delta3++;
+                            else if (size == 4)
+                                delta4++;
+                            else if (size == 5)
+                                delta5++;
+                            else if (size == 6)
+                                delta6++;
+                            else if (size == 7)
+                                delta7++;
+                            else if (size == 8)
+                                delta8++;
+                            else if (size == 9)
+                                delta9++;
                         }
                     }
                     count1 += delta1;
                     count2 += delta2;
+ 	            count3 += delta3;
+                    count4 += delta4;
+                    count5 += delta5;
+                    count6 += delta6;
+                    count7 += delta7;
+                    count8 += delta8;
+                    count9 += delta9;
                 }
             }
         }

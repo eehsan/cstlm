@@ -69,7 +69,3 @@ target_link_libraries(create-collection.x sdsl pthread divsufsort divsufsort64)
 add_executable(query-index-knm.x src/query-index-knm.cpp)
 target_link_libraries(query-index-knm.x sdsl pthread divsufsort divsufsort64)
 
-add_executable(unit-test.x src/unit-test.cpp)
-target_link_libraries(unit-test.x gtest_main sdsl pthread divsufsort divsufsort64)
-enable_testing()
-add_test(TestsPass unit-test.x)
