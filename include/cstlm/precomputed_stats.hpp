@@ -264,6 +264,8 @@ struct precomputed_stats {
                 D2[size] = 2 - 3 * Y[size] * (double)counts.n3[size] / (double)counts.n2[size];
             if (counts.n3[size] != 0)
                 D3[size] = 3 - 4 * Y[size] * (double)counts.n4[size] / (double)counts.n3[size];
+	    if (counts.n4[size] != 0)
+                D4[size] = 4 - 5 * Y[size] * (double)counts.n5[size] / (double)counts.n4[size];
             if (counts.n5[size] != 0)
                 D5[size] = 5 - 6 * Y[size] * (double)counts.n6[size] / (double)counts.n5[size];
             if (counts.n6[size] != 0)
@@ -286,6 +288,8 @@ struct precomputed_stats {
                 D2_cnt[size] = 2 - 3 * Y_cnt[size] * (double)counts.n3_cnt[size] / (double)counts.n2_cnt[size];
             if (counts.n3_cnt[size] != 0)
                 D3_cnt[size] = 3 - 4 * Y_cnt[size] * (double)counts.n4_cnt[size] / (double)counts.n3_cnt[size];
+            if (counts.n4_cnt[size] != 0)
+                D4_cnt[size] = 4 - 5 * Y_cnt[size] * (double)counts.n5_cnt[size] / (double)counts.n4_cnt[size];
             if (counts.n5_cnt[size] != 0)
                 D5_cnt[size] = 5 - 6 * Y_cnt[size] * (double)counts.n6_cnt[size] / (double)counts.n5_cnt[size];
             if (counts.n6_cnt[size] != 0)
