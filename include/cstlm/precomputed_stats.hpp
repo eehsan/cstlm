@@ -407,7 +407,7 @@ struct precomputed_stats {
         if (ismkn) {
             display_vec("D1", D1, ngramsize);
             display_vec("D2", D2, ngramsize);
-            display_vec("D3+", D3, ngramsize);
+            display_vec("D3", D3, ngramsize);
             display_vec("D4", D4, ngramsize);
             display_vec("D5", D5, ngramsize);
             display_vec("D6", D6, ngramsize);

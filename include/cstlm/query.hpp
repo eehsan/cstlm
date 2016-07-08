@@ -35,7 +35,7 @@ public:
     {
         m_idx = nullptr;
     }
-    LMQueryMKN(const index_type* idx, uint64_t ngramsize, bool start_sentence = true);
+    LMQueryMKN(const index_type* idx, uint64_t ngramsize, uint64_t discount_depth, bool start_sentence = true);
     double append_symbol(const value_type& symbol);
 
     bool operator==(const LMQueryMKN& other) const;
@@ -55,14 +55,16 @@ public:
 private:
     const index_type* m_idx;
     uint64_t m_ngramsize;
+    uint64_t m_discount_depth;
     std::vector<node_type> m_last_nodes_incl;
     std::deque<value_type> m_pattern;
 };
 
 template <class t_idx>
-LMQueryMKN<t_idx>::LMQueryMKN(const t_idx* idx, uint64_t ngramsize, bool start_sentence)
+LMQueryMKN<t_idx>::LMQueryMKN(const t_idx* idx, uint64_t ngramsize, uint64_t discount_depth, bool start_sentence)
     : m_idx(idx)
     , m_ngramsize(ngramsize)
+    , m_discount_depth(discount_depth)
 {
     auto root = m_idx->cst.root();
     m_last_nodes_incl.push_back(root);
@@ -116,8 +118,7 @@ double LMQueryMKN<t_idx>::append_symbol(const value_type& symbol)
             node_excl_it++;
             if (node_excl_it == m_last_nodes_incl.end()) {
                 break;
-            }
-            else {
+            } else {
                 node_excl = *node_excl_it;
             }
         }
@@ -129,71 +130,83 @@ double LMQueryMKN<t_idx>::append_symbol(const value_type& symbol)
         if ((i == m_ngramsize && m_ngramsize != 1) || (*start == PAT_START_SYM)) {
             c = (ok) ? m_idx->cst.size(node_incl) : 0;
             d = m_idx->cst.size(node_excl);
-        }
-        else if (i == 1 || m_ngramsize == 1) {
+        } else if (i == 1 || m_ngramsize == 1) {
             c = (ok) ? m_idx->N1PlusBack(node_incl, start, pattern_end) : 0;
             d = (double)m_idx->discounts.counts.N1plus_dotdot;
-        }
-        else {
+        } else {
             c = (ok) ? m_idx->N1PlusBack(node_incl, start, pattern_end) : 0;
             d = m_idx->N1PlusFrontBack(node_excl, start, pattern_end - 1);
         }
 
         if (c == 1) {
             c -= D1;
-        }
-        else if (c == 2) {
+        } else if (c == 2) {
             c -= D2;
-        }
-        else if (c == 3) {
-            c -= D3;
-	} 
-        else if (c == 4) {
-	    c -= D4;
-        } 
-        else if (c == 5) {
-            c -= D5;
-        } 
-        else if (c == 6) {
-            c -= D6;
-        } 
-        else if (c == 7) {
-            c -= D7;
-        } 
-        else if (c == 8) {
-            c -= D8;
-        } 
-        else if (c == 9) {
-            c -= D9;
-        } 
-        else if (c >= 10) {
-            c -= D10p;
+        } else if (c >= 3) {
+            if (m_discount_depth == 3) {
+                c -= D3;
+            } else if (m_discount_depth == 4) {
+                if (c == 3) {
+                    c -= D3;
+                } else if (c >= 4) {
+                    c -= D4;
+                }
+            } else if (m_discount_depth == 10) {
+                if (c == 3) {
+                    c -= D3;
+                } else if (c == 4) {
+                    c -= D4;
+                } else if (c == 5) {
+                    c -= D5;
+                } else if (c == 6) {
+                    c -= D6;
+                } else if (c == 7) {
+                    c -= D7;
+                } else if (c == 8) {
+                    c -= D8;
+                } else if (c == 9) {
+                    c -= D9;
+                } else if (c >= 10) {
+                    c -= D10p;
+                }
+            }
         }
 
-        uint64_t f1=0; uint64_t f2 =0; uint64_t f3 = 0; uint64_t f4 = 0; uint64_t f5 = 0;
-	uint64_t f6 = 0; uint64_t f7 = 0; uint64_t f8 = 0; uint64_t f9 = 0; uint64_t f10p = 0;
+        uint64_t f1 = 0;
+        uint64_t f2 = 0;
+        uint64_t f3 = 0;
+        uint64_t f4 = 0;
+        uint64_t f5 = 0;
+        uint64_t f6 = 0;
+        uint64_t f7 = 0;
+        uint64_t f8 = 0;
+        uint64_t f9 = 0;
+        uint64_t f10p = 0;
 
         if ((i == m_ngramsize && m_ngramsize != 1) || (*start == PAT_START_SYM)) {
-	    m_idx->N123PlusFront(node_excl, start, pattern_end - 1, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10p);
-        }
-        else if (i == 1 || m_ngramsize == 1) {
+            m_idx->N123PlusFront(node_excl, start, pattern_end - 1, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10p);
+        } else if (i == 1 || m_ngramsize == 1) {
             f1 = m_idx->discounts.counts.n1_cnt[1];
             f2 = m_idx->discounts.counts.n2_cnt[1];
             f3 = m_idx->discounts.counts.n3_cnt[1];
-	    f4 = m_idx->discounts.counts.n4_cnt[1];
+            f4 = m_idx->discounts.counts.n4_cnt[1];
             f5 = m_idx->discounts.counts.n5_cnt[1];
             f6 = m_idx->discounts.counts.n6_cnt[1];
             f7 = m_idx->discounts.counts.n7_cnt[1];
             f8 = m_idx->discounts.counts.n8_cnt[1];
             f9 = m_idx->discounts.counts.n9_cnt[1];
             f10p = (m_idx->vocab_size() - 2) - (f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8 + f9);
-        }
-        else {
-	    m_idx->N123PlusFrontPrime(node_excl, start, pattern_end - 1, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10p);
+        } else {
+            m_idx->N123PlusFrontPrime(node_excl, start, pattern_end - 1, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10p);
         }
 
-        // n3p is dodgy
-	double gamma = D1 * f1 + D2 * f2 + D3 * f3 + D4 * f4 + D5 * f5 + D6 * f6 + D7 * f7 + D8 * f8 + D9 * f9 + D10p * f10p;
+        //default assumes discount depth = 10
+        double gamma = D1 * f1 + D2 * f2 + D3 * f3 + D4 * f4 + D5 * f5 + D6 * f6 + D7 * f7 + D8 * f8 + D9 * f9 + D10p * f10p;
+        if (m_discount_depth == 3) {
+            gamma = D1 * f1 + D2 * f2 + D3 * (f3 + f4 + f5 + f6 + f7 + f8 + f9 + f10p);
+        } else if (m_discount_depth == 4) {
+            gamma = D1 * f1 + D2 * f2 + D3 * f3 + D4 * (f4 + f5 + f6 + f7 + f8 + f9 + f10p);
+        } 
         p = (c + gamma * p) / d;
     }
 

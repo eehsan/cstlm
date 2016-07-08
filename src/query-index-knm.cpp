@@ -25,6 +25,7 @@ typedef struct cmdargs {
     std::string pattern_file;
     std::string collection_dir;
     int ngramsize;
+    int discount_depth;
     bool ismkn;
     bool isbackward;
     bool isstored;
@@ -37,13 +38,14 @@ void print_usage(const char* program)
 {
     fprintf(
         stdout,
-        "%s -c <collection dir> -p <pattern file> -m <boolean> -n <ngramsize>\n",
+        "%s -c <collection dir> -p <pattern file> -m <boolean> -n <ngramsize> -d <discount-depth>\n",
         program);
     fprintf(stdout, "where\n");
     fprintf(stdout, "  -c <collection dir>  : the collection dir.\n");
     fprintf(stdout, "  -p <pattern file>  : the pattern file.\n");
     fprintf(stdout, "  -m : use Modified-KN (default = KN).\n");
     fprintf(stdout, "  -n <ngramsize>  : the ngramsize (integer).\n");
+    fprintf(stdout, "  -d <discount-depth>  : the discount-depth (integer).\n");
     fprintf(stdout, "  -r : doing reranking (default = language modelling).\n");
 };
 
@@ -56,7 +58,8 @@ cmdargs_t parse_args(int argc, const char* argv[])
     args.ismkn = false;
     args.ngramsize = 1;
     args.isreranking = false;
-    while ((op = getopt(argc, (char* const*)argv, "p:c:n:mfbsr1")) != -1) {
+    args.discount_depth = 10;
+    while ((op = getopt(argc, (char* const*)argv, "p:c:n:d:mfbsr1")) != -1) {
         switch (op) {
         case 'p':
             args.pattern_file = optarg;
@@ -73,6 +76,8 @@ cmdargs_t parse_args(int argc, const char* argv[])
         case 'r':
             args.isreranking = true;
             break;
+        case 'd':
+            args.discount_depth = atoi(optarg);
         }
     }
     if (args.collection_dir == "" || args.pattern_file == "") {
@@ -90,7 +95,7 @@ cmdargs_t parse_args(int argc, const char* argv[])
 template <class t_idx>
 void run_queries(const t_idx& idx,
     const std::vector<typename t_idx::pattern_type> patterns,
-    uint64_t ngramsize, bool ismkn)
+    uint64_t ngramsize, bool ismkn, uint64_t discount_depth)
 {
     using clock = std::chrono::high_resolution_clock;
     double perplexity = 0;
@@ -109,7 +114,7 @@ void run_queries(const t_idx& idx,
         pattern.insert(pattern.begin(), PAT_START_SYM);
         // run the query
         auto start = clock::now();
-        double sentenceprob = sentence_logprob_kneser_ney(idx, pattern, M, ngramsize, ismkn);
+        double sentenceprob = sentence_logprob_kneser_ney(idx, pattern, M, ngramsize, ismkn, discount_depth);
         auto stop = clock::now();
 
         // std::ostringstream sp("", std::ios_base::ate);
@@ -136,7 +141,7 @@ template <class t_idx>
 void run_reranker(const t_idx& idx,
     const std::vector<typename t_idx::pattern_type> patterns,
     const std::vector<std::vector<std::string> > orig_patterns,
-    uint64_t ngramsize, bool ismkn)
+    uint64_t ngramsize, bool ismkn, uint64_t discount_depth)
 {
     using clock = std::chrono::high_resolution_clock;
     double perplexity = 0;
@@ -178,7 +183,7 @@ void run_reranker(const t_idx& idx,
         pattern.insert(pattern.begin(), PAT_START_SYM);
         // run the query
         auto start = clock::now();
-        double sentenceprob = sentence_logprob_kneser_ney(idx, pattern, M, ngramsize, ismkn);
+        double sentenceprob = sentence_logprob_kneser_ney(idx, pattern, M, ngramsize, ismkn, discount_depth);
         auto stop = clock::now();
 
         perplexity = pow(10, -sentenceprob / M);
@@ -266,9 +271,9 @@ int execute(collection& col, const cmdargs_t& args)
 
     /* run the querying or reranking */
     if (args.isreranking)
-        run_reranker(idx, patterns, orig_patterns, args.ngramsize, args.ismkn);
+        run_reranker(idx, patterns, orig_patterns, args.ngramsize, args.ismkn, args.discount_depth);
     else
-        run_queries(idx, patterns, args.ngramsize, args.ismkn);
+        run_queries(idx, patterns, args.ngramsize, args.ismkn, args.discount_depth);
 
     return EXIT_SUCCESS;
 }
