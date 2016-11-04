@@ -47,6 +47,11 @@ Build index (including quantities for modified KN)
 ./build-index.x -c ../collections/toy/ -m
 ```
 
+Query index (i.e., Modified KN (drop -m for KN), 5-gram)
+
+```
+./query-index-knm.x -c ../collections/toy/ -p test.txt -m -n 5 
+```
 ## Usage instructions (Character based language model)
 
 Create collection:
