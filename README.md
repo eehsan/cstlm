@@ -9,11 +9,13 @@ This code is the basis of the following papers:
 
 - Ehsan Shareghi, Matthias Petri, Gholamreza Haffari, Trevor Cohn: Compact, Efficient and Unlimited Capacity: Language Modeling with Compressed Suffix Trees. EMNLP 2015: 2409-2418
 
-- Ehsan Shareghi, Matthias Petri, Gholamreza Haffari, Trevor Cohn: Fast, Small and Exact: Infinite-order Language Modelling with Compressed Suffix Trees. TACL 2016
+- Ehsan Shareghi, Matthias Petri, Gholamreza Haffari, Trevor Cohn: Fast, Small and Exact: Infinite-order Language Modelling with Compressed Suffix Trees. TACL 2016 : 477-490
 
-- Ehsan Shareghi, Trevor Cohn, Gholamreza Haffari: Richer Interpolative Smoothing Based on Modified Kneser-Ney Language Modeling. EMNLP 2016
+- Ehsan Shareghi, Trevor Cohn, Gholamreza Haffari: Richer Interpolative Smoothing Based on Modified Kneser-Ney Language Modeling. EMNLP 2016: 944-948
 
 - TBA 
+
+Please cite our EMNLP2015 and TACL2016 papers, if you use our code. 
 
 ## Compile instructions
 
