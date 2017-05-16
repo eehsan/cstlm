@@ -13,8 +13,6 @@ This code is the basis of the following papers:
 
 - Ehsan Shareghi, Trevor Cohn, Gholamreza Haffari: Richer Interpolative Smoothing Based on Modified Kneser-Ney Language Modeling. EMNLP 2016: 944-948
 
-- TBA 
-
 Please cite our EMNLP2015 and TACL2016 papers, if you use our code. 
 
 ## Compile instructions
