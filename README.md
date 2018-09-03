@@ -3,6 +3,12 @@ Welcome to CSTLM
 
 This is a compressed suffix tree based infinite context size language model capable of indexing terabyte sized text collections.
 
+## Disclaimer
+
+The new multi-threaded extension which does parallel construction (was not used in the published results listed in below) is not tested rigorously. For stability and correctness, please checkout the older single-thread version:
+
+git checkout 8163b55fe9a9dfad1d1dbcc89a09d451c5fe217b
+
 ## References
 
 This code is the basis of the following papers:
