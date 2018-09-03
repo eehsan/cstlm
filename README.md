@@ -76,5 +76,5 @@ Build index (including quantities for modified KN)
 
 - Check out the MMKN branch of the repository: `https://github.com/eehsan/cstlm.git`
 
-## Moses integration
+## Moses integration and parallel construction
 Checkout what Matthias has developed on [his repository](https://github.com/mpetri/cstlm).
