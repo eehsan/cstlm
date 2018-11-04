@@ -258,50 +258,128 @@ struct precomputed_stats {
 
         for (auto size = 1ULL; size <= max_ngram_len; size++) {
             Y[size] = (double)counts.n1[size] / ((double)counts.n1[size] + 2 * (double)counts.n2[size]);
-            if (counts.n1[size] != 0)
+            if (counts.n1[size] != 0){
                 D1[size] = 1 - 2 * Y[size] * (double)counts.n2[size] / (double)counts.n1[size];
-            if (counts.n2[size] != 0)
+                if  (D1[size] < 0)
+                        D1[size] = D1[size-1];
+	    }
+            if (counts.n2[size] != 0){
                 D2[size] = 2 - 3 * Y[size] * (double)counts.n3[size] / (double)counts.n2[size];
-            if (counts.n3[size] != 0)
+                if  (D2[size] < 0)
+                        D2[size] = D2[size-1];
+	    }
+            if (counts.n3[size] != 0){
                 D3[size] = 3 - 4 * Y[size] * (double)counts.n4[size] / (double)counts.n3[size];
-	    if (counts.n4[size] != 0)
+                if  (D3[size] < 0)
+                        D3[size] = D3[size-1];
+	    }
+	    if (counts.n4[size] != 0){
                 D4[size] = 4 - 5 * Y[size] * (double)counts.n5[size] / (double)counts.n4[size];
-            if (counts.n5[size] != 0)
+                if  (D4[size] < 0)
+                        D4[size] = D4[size-1];
+	    }
+            if (counts.n5[size] != 0){
                 D5[size] = 5 - 6 * Y[size] * (double)counts.n6[size] / (double)counts.n5[size];
-            if (counts.n6[size] != 0)
+                if  (D5[size] < 0)
+                        D5[size] = D5[size-1];
+	    }
+            if (counts.n6[size] != 0){
                 D6[size] = 6 - 7 * Y[size] * (double)counts.n7[size] / (double)counts.n6[size];
-            if (counts.n7[size] != 0)
+                if  (D6[size] < 0)
+                        D6[size] = D6[size-1];
+	    }
+            if (counts.n7[size] != 0){
                 D7[size] = 7 - 8 * Y[size] * (double)counts.n8[size] / (double)counts.n7[size];
-            if (counts.n8[size] != 0)
+                if  (D7[size] < 0)
+                        D7[size] = D7[size-1];
+	    }
+            if (counts.n8[size] != 0){
                 D8[size] = 8 - 9 * Y[size] * (double)counts.n9[size] / (double)counts.n8[size];
-            if (counts.n9[size] != 0)
+                if  (D8[size] < 0)
+                        D8[size] = D8[size-1];
+	    }
+            if (counts.n9[size] != 0){
                 D9[size] = 9 - 10 * Y[size] * (double)counts.n10[size] / (double)counts.n9[size];
-            if (counts.n10[size] != 0)
+                if  (D9[size] < 0)
+                        D9[size] = D9[size-1];
+	    }
+            if (counts.n10[size] != 0){
                 D10[size] = 10 - 11 * Y[size] * (double)counts.n11[size] / (double)counts.n10[size];
+                if  (D10[size] < 0)
+                        D10[size] = D10[size-1];
+	    }
         }
 
         for (auto size = 1ULL; size <= max_ngram_len; size++) {
             Y_cnt[size] = (double)counts.n1_cnt[size] / ((double)counts.n1_cnt[size] + 2 * (double)counts.n2_cnt[size]);
             if (counts.n1_cnt[size] != 0)
+	    {
                 D1_cnt[size] = 1 - 2 * Y_cnt[size] * (double)counts.n2_cnt[size] / (double)counts.n1_cnt[size];
+		if  (D1_cnt[size] < 0)
+			D1_cnt[size] = D1_cnt[size-1];
+	    }
             if (counts.n2_cnt[size] != 0)
+	    {
                 D2_cnt[size] = 2 - 3 * Y_cnt[size] * (double)counts.n3_cnt[size] / (double)counts.n2_cnt[size];
+                if  (D2_cnt[size] < 0)
+                        D2_cnt[size] = D2_cnt[size-1];
+
+	    }
             if (counts.n3_cnt[size] != 0)
+	    {
                 D3_cnt[size] = 3 - 4 * Y_cnt[size] * (double)counts.n4_cnt[size] / (double)counts.n3_cnt[size];
+                if  (D3_cnt[size] < 0)
+                        D3_cnt[size] = D3_cnt[size-1];
+	    }
             if (counts.n4_cnt[size] != 0)
+	    {
                 D4_cnt[size] = 4 - 5 * Y_cnt[size] * (double)counts.n5_cnt[size] / (double)counts.n4_cnt[size];
+                if  (D4_cnt[size] < 0)
+                        D4_cnt[size] = D4_cnt[size-1];
+
+	    }
             if (counts.n5_cnt[size] != 0)
+	    {
                 D5_cnt[size] = 5 - 6 * Y_cnt[size] * (double)counts.n6_cnt[size] / (double)counts.n5_cnt[size];
+                if  (D5_cnt[size] < 0)
+                        D5_cnt[size] = D5_cnt[size-1];
+
+	    }
             if (counts.n6_cnt[size] != 0)
+	    {
                 D6_cnt[size] = 6 - 7 * Y_cnt[size] * (double)counts.n7_cnt[size] / (double)counts.n6_cnt[size];
+                if  (D6_cnt[size] < 0)
+                        D6_cnt[size] = D6_cnt[size-1];
+
+	    }
             if (counts.n7_cnt[size] != 0)
+	    {
                 D7_cnt[size] = 7 - 8 * Y_cnt[size] * (double)counts.n8_cnt[size] / (double)counts.n7_cnt[size];
+                if  (D7_cnt[size] < 0)
+                        D7_cnt[size] = D7_cnt[size-1];
+
+	    }
             if (counts.n8_cnt[size] != 0)
+	    {
                 D8_cnt[size] = 8 - 9 * Y_cnt[size] * (double)counts.n9_cnt[size] / (double)counts.n8_cnt[size];
+                if  (D8_cnt[size] < 0)
+                        D8_cnt[size] = D8_cnt[size-1];
+
+	    }
             if (counts.n9_cnt[size] != 0)
+	    {
                 D9_cnt[size] = 9 - 10 * Y_cnt[size] * (double)counts.n10_cnt[size] / (double)counts.n9_cnt[size];
+                if  (D9_cnt[size] < 0)
+                        D9_cnt[size] = D9_cnt[size-1];
+
+	    }
             if (counts.n10_cnt[size] != 0)
+	    {
                 D10_cnt[size] = 10 - 11 * Y_cnt[size] * (double)counts.n11_cnt[size] / (double)counts.n10_cnt[size];
+                if  (D10_cnt[size] < 0)
+                        D10_cnt[size] = D10_cnt[size-1];
+
+	    }
         }
     }
 
