@@ -19,16 +19,6 @@ Please cite our EMNLP2016 paper, if you use our code.
 4. `cmake ..`
 5. `make -j`
 
-## Run unit tests to ensure correctness
-
-```
-cd build
-rm -rf ../collections/unittest/
-./create-collection.x -i ../UnitTestData/data/training.data -c ../collections/unittest
-./create-collection.x -i ../UnitTestData/data/training.data -c ../collections/unittest -1
-./unit-test.x
-```
-
 ## Usage instructions (Word based language model)
 
 Create collection:
@@ -47,4 +37,4 @@ Query index (i.e., Modified KN (drop -m for KN), 5-gram, discount_depth 5)
 
 ```
 ./query-index-knm.x -c ../collections/toy/ -p test.txt -m -n 5  -d 5
-``
+```
