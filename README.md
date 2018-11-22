@@ -74,7 +74,7 @@ Build index (including quantities for modified KN)
 
 ## Generalized Modified Kneser-Ney
 
-- Check out the MMKN branch of the repository: `https://github.com/eehsan/cstlm.git`
+- Check out the MMKN branch of the repository: `https://github.com/eehsan/cstlm/tree/MMKN`
 
 ## Moses integration and parallel construction
 Checkout what Matthias has developed on [his repository](https://github.com/mpetri/cstlm).
